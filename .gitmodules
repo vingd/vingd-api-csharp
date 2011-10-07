@@ -1,0 +1,3 @@
+[submodule "KnopsoAPIExample/knopso-popup"]
+	path = KnopsoAPIExample/knopso-popup
+	url = git@imago:knopso-popup.git

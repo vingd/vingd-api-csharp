@@ -1,6 +1,7 @@
 using System;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Knopso;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ using System.Text.RegularExpressions;
 namespace KnopsoAPIExample {
 	
 	public partial class Default : System.Web.UI.Page {
+		public string baseURL = "http://127.0.0.1:8080";
+		
 		KnopsoBroker knopso = null;
 
 		public Default() {
@@ -16,7 +19,9 @@ namespace KnopsoAPIExample {
 			string username = "test.kapi-cs@knopso.com";
 			string password = "123";
 			string pwhash = KnopsoBroker.SHA1(password);
+			//knopso = new KnopsoBroker(username, pwhash, "https://broker.knopso.lo:8004", "http://my.knopso.lo");
 			knopso = new KnopsoBroker(username, pwhash);
+			
 		}
 
 		private void LogAppend(string msg) {
@@ -27,9 +32,9 @@ namespace KnopsoAPIExample {
 			lblResponse.Text = msg + "\n";
 		}
 		
-		private void SetActionLink(string text, string url) {
-			linkAction.Text = text;
-			linkAction.NavigateUrl = url;
+		private void SetLink(HyperLink elem, string text, string url) {
+			elem.Text = text;
+			elem.NavigateUrl = url;
 		}
 		
 		private string ObjectDump(object data) {
@@ -41,19 +46,21 @@ namespace KnopsoAPIExample {
 			switch (Request["state"]) {
 			
 			case "register":
-				Session["oid"] = knopso.RegisterObject("C# test object", "http://localhost:8080/?state=access");
+				Session["oid"] = knopso.RegisterObject("C# test object", baseURL+"/?state=access");
 				LogAppend("Object registered, Object ID = " + Session["oid"]);
-				SetActionLink("Create an order for this object.", "/?state=order");
+				SetLink(linkAction, "Create an order for this object.", "/?state=order");
 				break;
 			
 			case "order":
 				if (Session["oid"] == null) {
-					SetActionLink("Register an object first.", "/?state=register");
+					SetLink(linkAction, "Register an object first.", "/?state=register");
 				} else {
 					KnopsoOrder order = knopso.CreateOrder((long)Session["oid"], 1.99);
 					Session["orderid"] = order.id;
 					LogAppend("Order created, Order ID = " + order.id);
-					SetActionLink("Buy it!", order.GetBuyURL("my-custom-context"));
+					SetLink(linkAction, "Buy it!", order.GetBuyURL("my-custom-context"));
+					SetLink(linkActionAlt, "Buy it in popup!", order.GetPopupBuyURL("my-custom-context"));
+					linkActionAlt.Attributes["onclick"] = "return sell(this);";
 				}
 				break;
 			
@@ -71,8 +78,7 @@ namespace KnopsoAPIExample {
 			
 			default:
 				LogAppend("You can start by registering an object.");
-				linkAction.Text = "Register an object.";
-				linkAction.NavigateUrl = "/?state=register";
+				SetLink(linkAction, "Register an object.", "/?state=register");
 				break;
 			}
 		}
@@ -90,7 +96,6 @@ namespace KnopsoAPIExample {
 			}
 		}
 
-		
 		private void RawKnopsoRequest(string url) {
 			try {
 				object data = knopso.Request("GET", url, null);
@@ -108,6 +113,7 @@ namespace KnopsoAPIExample {
 		protected void btnRequest_Click (object sender, System.EventArgs e) {
 			RawKnopsoRequest(txtUrl.Text);
 		}
+		
 	}
 
 }

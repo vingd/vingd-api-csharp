@@ -22,5 +22,7 @@ namespace KnopsoAPIExample {
 		protected System.Web.UI.WebControls.Label lblResponse;
 		
 		protected System.Web.UI.WebControls.HyperLink linkAction;
+		
+		protected System.Web.UI.WebControls.HyperLink linkActionAlt;
 	}
 }
