@@ -19,22 +19,25 @@
 
 </head>
 <body style="font-family: sans-serif;">
-<form id="form1" runat="server">
-	<asp:TextBox runat="server" id="txtUrl" Style="width: 400px"></asp:TextBox>
-	<asp:Button id="btnRequest" runat="server" Text="request" OnClick="btnRequest_Click" /> <br/>
-	<pre>
-	Try:
-	/registry/objects/
-	/registry/objects/&lt;oid&gt;
-	/id/users/
-	/fort/accounts
-	/fort/transfers
-	</pre>
-	<hr/>
-</form>
+
 <asp:Label id="lblResponse" runat="server" Text="" Style="display: block; white-space: pre; margin: 16px 0; font-family: monospace; font-size: 12px;" OnLoad="btnRequest_Load"></asp:Label>
 <asp:HyperLink id="linkAction" runat="server"></asp:HyperLink>
 <asp:HyperLink id="linkActionAlt" runat="server" Style="margin-left: 16px;"></asp:HyperLink>
+
+<hr style="margin-top: 32px"/>
+<span style="font-size: smaller">(debugging) Execute a custom backend request:</span>
+<form id="form1" runat="server" style="margin: 8px 0;" action="/?state=custom-get-request">
+	<asp:TextBox runat="server" id="txtUrl" Style="width: 400px"></asp:TextBox>
+	<asp:Button id="btnRequest" runat="server" Text="request" /> <br/>
+	<pre>
+  Try:
+    /registry/objects/
+    /registry/objects/&lt;oid&gt;
+    /id/users/
+    /fort/accounts
+    /fort/transfers
+	</pre>
+</form>
 
 </body>
 </html>

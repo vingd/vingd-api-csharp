@@ -76,6 +76,11 @@ namespace KnopsoAPIExample {
 				LogAppend("Purchase committed.");
 				break;
 			
+			case "custom-get-request":
+				object data = knopso.Request("GET", txtUrl.Text, null);
+				LogAppend("Response: " + ObjectDump(data));
+				break;
+				
 			default:
 				LogAppend("You can start by registering an object.");
 				SetLink(linkAction, "Register an object.", "/?state=register");
@@ -96,24 +101,6 @@ namespace KnopsoAPIExample {
 			}
 		}
 
-		private void RawKnopsoRequest(string url) {
-			try {
-				object data = knopso.Request("GET", url, null);
-				LogReplace(ObjectDump(data));
-				
-			} catch (KnopsoTransportException e) {
-				LogAppend(e.ToString());
-			} catch (KnopsoOperationException e) {
-				LogAppend(e.ToString());
-			} catch (Exception e) {
-				LogAppend("Unhandled exception: " + e);
-			}
-		}
-		
-		protected void btnRequest_Click (object sender, System.EventArgs e) {
-			RawKnopsoRequest(txtUrl.Text);
-		}
-		
 	}
 
 }

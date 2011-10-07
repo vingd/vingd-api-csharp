@@ -13,16 +13,16 @@ namespace KnopsoAPIExample {
 	
 	public partial class Default {
 		
-		protected System.Web.UI.HtmlControls.HtmlForm form1;
-		
-		protected System.Web.UI.WebControls.TextBox txtUrl;
-		
-		protected System.Web.UI.WebControls.Button btnRequest;
-		
 		protected System.Web.UI.WebControls.Label lblResponse;
 		
 		protected System.Web.UI.WebControls.HyperLink linkAction;
 		
 		protected System.Web.UI.WebControls.HyperLink linkActionAlt;
+		
+		protected System.Web.UI.HtmlControls.HtmlForm form1;
+		
+		protected System.Web.UI.WebControls.TextBox txtUrl;
+		
+		protected System.Web.UI.WebControls.Button btnRequest;
 	}
 }
