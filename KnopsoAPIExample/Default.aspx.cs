@@ -1,0 +1,113 @@
+using System;
+using System.Web;
+using System.Web.UI;
+using Knopso;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+namespace KnopsoAPIExample {
+	
+	public partial class Default : System.Web.UI.Page {
+		KnopsoBroker knopso = null;
+
+		public Default() {
+			//string username = "test@knopso.com";
+			string username = "test.kapi-cs@knopso.com";
+			string password = "123";
+			string pwhash = KnopsoBroker.SHA1(password);
+			knopso = new KnopsoBroker(username, pwhash);
+		}
+
+		private void LogAppend(string msg) {
+			lblResponse.Text += msg + "\n";
+		}
+		
+		private void LogReplace(string msg) {
+			lblResponse.Text = msg + "\n";
+		}
+		
+		private void SetActionLink(string text, string url) {
+			linkAction.Text = text;
+			linkAction.NavigateUrl = url;
+		}
+		
+		private string ObjectDump(object data) {
+			return new JsonFormatter(knopso.JSONStringify(data)).Format();
+		}
+
+		
+		private void HandlePageRequest() {
+			switch (Request["state"]) {
+			
+			case "register":
+				Session["oid"] = knopso.RegisterObject("C# test object", "http://localhost:8080/?state=access");
+				LogAppend("Object registered, Object ID = " + Session["oid"]);
+				SetActionLink("Create an order for this object.", "/?state=order");
+				break;
+			
+			case "order":
+				if (Session["oid"] == null) {
+					SetActionLink("Register an object first.", "/?state=register");
+				} else {
+					KnopsoOrder order = knopso.CreateOrder((long)Session["oid"], 1.99);
+					Session["orderid"] = order.id;
+					LogAppend("Order created, Order ID = " + order.id);
+					SetActionLink("Buy it!", order.GetBuyURL("my-custom-context"));
+				}
+				break;
+			
+			case "access":
+				string context = Request["context"];
+				string token = Request["token"];
+				KnopsoPurchase purchase = knopso.VerifyToken(token);
+				LogAppend("Context: " + context);
+				LogAppend("Purchase: " + ObjectDump(purchase));
+				// serve the content, then commit
+				LogAppend("TODO: serve the content.");
+				knopso.CommitPurchase(purchase);
+				LogAppend("Purchase committed.");
+				break;
+			
+			default:
+				LogAppend("You can start by registering an object.");
+				linkAction.Text = "Register an object.";
+				linkAction.NavigateUrl = "/?state=register";
+				break;
+			}
+		}
+
+		protected void btnRequest_Load (object sender, System.EventArgs e) {
+			try {
+				HandlePageRequest();
+				
+			} catch (KnopsoTransportException ex) {
+				LogAppend(ex.ToString());
+			} catch (KnopsoOperationException ex) {
+				LogAppend(ex.ToString());
+			} catch (Exception ex) {
+				LogAppend("Unhandled exception: " + ex);
+			}
+		}
+
+		
+		private void RawKnopsoRequest(string url) {
+			try {
+				object data = knopso.Request("GET", url, null);
+				LogReplace(ObjectDump(data));
+				
+			} catch (KnopsoTransportException e) {
+				LogAppend(e.ToString());
+			} catch (KnopsoOperationException e) {
+				LogAppend(e.ToString());
+			} catch (Exception e) {
+				LogAppend("Unhandled exception: " + e);
+			}
+		}
+		
+		protected void btnRequest_Click (object sender, System.EventArgs e) {
+			RawKnopsoRequest(txtUrl.Text);
+		}
+	}
+
+}
