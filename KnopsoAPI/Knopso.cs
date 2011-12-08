@@ -58,7 +58,7 @@ namespace Knopso {
 	public class KnopsoBroker {
 		// default knopso (server) backend and (user) frontend base urls
 		public const string defaultBackendURL = "https://broker.knopso.com:8004";
-		public const string defaultFrontendURL = "http://my.knopso.com";
+		public const string defaultFrontendURL = "https://www.knopso.com";
 
 		// default order lifespan: 15min
 		public TimeSpan defaultOrderExpiry = new TimeSpan(0, 15, 0);

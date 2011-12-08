@@ -18,7 +18,7 @@ namespace KnopsoAPIExample {
 			string username = "test@knopso.com";
 			string password = "123";
 			string pwhash = KnopsoBroker.SHA1(password);
-			//knopso = new KnopsoBroker(username, pwhash, "https://broker.knopso.lo:8004", "http://my.knopso.lo");
+			//knopso = new KnopsoBroker(username, pwhash, "https://broker.knopso.lo:8004", "https://www.knopso.lo");
 			knopso = new KnopsoBroker(username, pwhash);
 			
 		}
