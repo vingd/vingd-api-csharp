@@ -5,7 +5,7 @@
 	<title>Default</title>
 	
     <!-- purchase-in-popup magical part -->
-    <script type="text/javascript" src="knopso-popup/knopso.min.js"></script>
+    <script type="text/javascript" src="http://apps.knopso.com/cdn/knopso-popup/v0.6/knopso.min.js"></script>
     <script type="text/javascript">
     	var home = "<%= baseURL %>";
     	var objecthome = home + "/?state=access";
