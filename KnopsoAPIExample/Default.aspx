@@ -10,9 +10,10 @@
     	var home = "<%= baseURL %>";
     	var objecthome = home + "/?state=access";
         var sell = new knopso.popupOpener({
+            prologuePage: home+"/knopso-popup/prologue.html",
             epiloguePage: home+"/knopso-popup/epilogue.html",
             onSuccess: function(hwnd, token) {
-                window.location = objecthome + "&token="+token;
+                window.location = knopso.buildURL(objecthome, {token: token});
             }
         });
     </script>
