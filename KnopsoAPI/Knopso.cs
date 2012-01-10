@@ -63,6 +63,9 @@ namespace Knopso {
 		// default order lifespan: 15min
 		public TimeSpan defaultOrderExpiry = new TimeSpan(0, 15, 0);
 
+		// default voucher lifespan: 1 month (i.e. 31 day)
+		public TimeSpan defaultVoucherExpiry = new TimeSpan(31, 0, 0, 0);
+
 		public enum ObjectClassID {
 			Generic = 0
 		}
@@ -333,6 +336,48 @@ namespace Knopso {
 			Request("PUT", "/purchases/" + purchase.purchaseid, parameters);
 		}
 		
+		/**
+		 * Creates a new Knopso voucher.
+		 * 
+		 * The voucher created vouches the `amountVouched` (in OKA) to the bearer 
+		 * of the voucher (if used until `expiresLocal`). 
+		 * Upon claiming the vouched OKAs, user shall be presented with `userMessage`.
+		 * 
+		 * The key datum to present to the user is voucher claim URL on Knopso frontend, 
+		 * or alternatively the voucher code (returned .code / .GetRedirectURL()).
+		 * 
+		 */
+		public KnopsoVoucher CreateVoucher(double amountVouched, DateTime expiresLocal, string userMessage) {
+			DateTimeOffset expiresWithTimezone = new DateTimeOffset(expiresLocal, TimeZone.CurrentTimeZone.GetUtcOffset(expiresLocal));
+			var parameters = new Dictionary<string, object>();
+			parameters.Add("amount", (int)(amountVouched * 100));
+			parameters.Add("until", expiresWithTimezone.ToString("o"));
+			parameters.Add("message", userMessage);
+			
+			object responseRaw = Request("POST", "/vouchers/", parameters);
+			var response = ConvertToDict(responseRaw);
+			
+			return new KnopsoVoucher(
+				amountVouched,
+				Convert.ToInt64(response["id_fort_transfer"]),
+				expiresWithTimezone,
+				(string)response["vid_encoded"],
+				frontendURL
+			);
+		}
+		
+		public KnopsoVoucher CreateVoucher(double amountVouched, TimeSpan expiry, string userMessage) {
+			return CreateVoucher(amountVouched, DateTime.Now.Add(expiry), userMessage);
+		}
+
+		public KnopsoVoucher CreateVoucher(double amountVouched, string userMessage) {
+			return CreateVoucher(amountVouched, DateTime.Now.Add(defaultVoucherExpiry), userMessage);
+		}
+		
+		public KnopsoVoucher CreateVoucher(double amountVouched) {
+			return CreateVoucher(amountVouched, DateTime.Now.Add(defaultVoucherExpiry), null);
+		}
+
 	}
 
 	
@@ -352,18 +397,18 @@ namespace Knopso {
 			this.frontendURL = frontendURL;
 		}
 
-		public string GetBuyURL() {
-			return GetBuyURL(null);
+		public string GetRedirectURL() {
+			return GetRedirectURL(null);
 		}
-		public string GetBuyURL(string context) {
+		public string GetRedirectURL(string context) {
 			if (context != null) context = "?context=" + Uri.EscapeUriString(context);
 			return frontendURL + "/orders/" + id + "/add/" + context;
 		}
 
-		public string GetPopupBuyURL() {
-			return GetPopupBuyURL(null);
+		public string GetPopupURL() {
+			return GetPopupURL(null);
 		}
-		public string GetPopupBuyURL(string context) {
+		public string GetPopupURL(string context) {
 			if (context != null) context = "?context=" + Uri.EscapeUriString(context);
 			return frontendURL + "/popup/orders/" + id + "/add/" + context;
 		}
@@ -375,6 +420,31 @@ namespace Knopso {
 		public long purchaseid;
 		public long transferid;
 		public bool reclaimed;
+	}
+	
+	
+	public struct KnopsoVoucher {
+		public double amount;
+		public long transferid;
+		public DateTimeOffset expires;
+		public string code;
+		
+		private string frontendURL;
+		
+		public KnopsoVoucher(double amount, long transferid, DateTimeOffset expires, string code, string frontendURL) {
+			this.amount = amount;
+			this.transferid = transferid;
+			this.expires = expires;
+			this.code = code;
+			this.frontendURL = frontendURL;
+		}
+
+		public string GetRedirectURL() {
+			return frontendURL + "/vouchers/" + code;
+		}
+		public string GetPopupURL() {
+			return frontendURL + "/popup/vouchers/" + code;
+		}
 	}
 	
 }

@@ -20,7 +20,6 @@ namespace KnopsoAPIExample {
 			string pwhash = KnopsoBroker.SHA1(password);
 			//knopso = new KnopsoBroker(username, pwhash, "https://broker.knopso.lo:8004", "https://www.knopso.lo");
 			knopso = new KnopsoBroker(username, pwhash);
-			
 		}
 
 		private void LogAppend(string msg) {
@@ -57,8 +56,8 @@ namespace KnopsoAPIExample {
 					KnopsoOrder order = knopso.CreateOrder((long)Session["oid"], 1.99);
 					Session["orderid"] = order.id;
 					LogAppend("Order created, Order ID = " + order.id);
-					SetLink(linkAction, "Buy it!", order.GetBuyURL("my-custom-context"));
-					SetLink(linkActionAlt, "Buy it in popup!", order.GetPopupBuyURL("my-custom-context"));
+					SetLink(linkAction, "Buy it!", order.GetRedirectURL("my-custom-context"));
+					SetLink(linkActionAlt, "Buy it in a popup!", order.GetPopupURL("my-custom-context"));
 					linkActionAlt.Attributes["onclick"] = "return sell(this);";
 				}
 				break;
@@ -79,10 +78,19 @@ namespace KnopsoAPIExample {
 				object data = knopso.Request("GET", txtUrl.Text, null);
 				LogAppend("Response: " + ObjectDump(data));
 				break;
+			
+			case "voucher":
+				KnopsoVoucher voucher = knopso.CreateVoucher(1.99, "here goes a message for the user");
+				LogAppend("Voucher code: " + voucher.code);
+				SetLink(linkAction, "Use this voucher!", voucher.GetRedirectURL());
+				//SetLink(linkActionAlt, "Use this voucher in a popup!", voucher.GetPopupURL());
+				//linkActionAlt.Attributes["onclick"] = "return voucher(this);";
+				break;
 				
 			default:
-				LogAppend("You can start by registering an object.");
+				LogAppend("You can start by registering an object, or creating a voucher.");
 				SetLink(linkAction, "Register an object.", "/?state=register");
+				SetLink(linkActionAlt, "Create a voucher.", "/?state=voucher");
 				break;
 			}
 		}

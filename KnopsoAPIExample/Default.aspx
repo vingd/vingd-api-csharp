@@ -25,7 +25,8 @@
 <asp:HyperLink id="linkAction" runat="server"></asp:HyperLink>
 <asp:HyperLink id="linkActionAlt" runat="server" Style="margin-left: 16px;"></asp:HyperLink>
 
-<hr style="margin-top: 32px"/>
+<div style="margin-top: 32px"><a href="/">Back to home</a></div>
+<hr/>
 <span style="font-size: smaller">(debugging) Execute a custom backend request:</span>
 <form id="form1" runat="server" style="margin: 8px 0;" action="/?state=custom-get-request">
 	<asp:TextBox runat="server" id="txtUrl" Style="width: 400px"></asp:TextBox>
