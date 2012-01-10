@@ -12,18 +12,20 @@ namespace KnopsoAPIExample {
 	public partial class Default : System.Web.UI.Page {
 		public string baseURL = "http://127.0.0.1:8080";
 		
-		KnopsoBroker knopso = null;
-		private const string username = "test@knopso.com";
-		private const string password = "123";
+		private const string knopsoBackend = "https://broker.sandbox.knopso.com:8004";
+		private const string knopsoFrontend = "http://www.sandbox.knopso.com";
+		private const string knopsoUsername = "test@knopso.com";
+		private const string knopsoPassword = "123";
+		private KnopsoBroker knopso = null;
 
 		public Default() {
-			string pwhash = KnopsoBroker.SHA1(password);
+			string knopsoPasswordHash = KnopsoBroker.SHA1(knopsoPassword);
 			
 			// during development and testing, use sandbox:
-			knopso = new KnopsoBroker(username, pwhash, "https://broker.sandbox.knopso.com:8004", "http://www.sandbox.knopso.com");
+			knopso = new KnopsoBroker(knopsoUsername, knopsoPasswordHash, knopsoBackend, knopsoFrontend);
 			
 			// in production, use:
-			//knopso = new KnopsoBroker(username, pwhash);
+			//knopso = new KnopsoBroker(knopsoUsername, knopsoPasswordHash);
 		}
 
 		private void LogAppend(string msg) {
@@ -87,6 +89,7 @@ namespace KnopsoAPIExample {
 				KnopsoVoucher voucher = knopso.CreateVoucher(1.99, "here goes a message for the user");
 				LogAppend("Voucher code: " + voucher.code);
 				SetLink(linkAction, "Use this voucher!", voucher.GetRedirectURL());
+				// TODO: popup library should be better adapted for vouchers!
 				//SetLink(linkActionAlt, "Use this voucher in a popup!", voucher.GetPopupURL());
 				//linkActionAlt.Attributes["onclick"] = "return voucher(this);";
 				break;

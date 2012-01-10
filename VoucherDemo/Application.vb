@@ -1,6 +1,8 @@
 Imports Knopso
 
 Public Class Application
+	Private Const KnopsoBackend As String = "https://broker.sandbox.knopso.com:8004"
+	Private Const KnopsoFrontend As String = "http://www.sandbox.knopso.com"
 	Private Const KnopsoUsername As String = "test@knopso.com"
 	Private Const KnopsoPassword As String = "123"
 	
@@ -9,13 +11,13 @@ Public Class Application
 		
 		Dim knopso as KnopsoBroker
 		' sandbox:
-		knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash, "https://broker.sandbox.knopso.com:8004", "http://www.sandbox.knopso.com")
+		knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash, KnopsoBackend, KnopsoFrontend)
 		' production:
 		'knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash)
 		
 		Dim voucher as KnopsoVoucher
 		Try
-			voucher = knopso.CreateVoucher(1.99, "Hvala")
+			voucher = knopso.CreateVoucher(amount, msg)
 		Catch ex as KnopsoTransportException
 			System.Console.WriteLine(ex.ToString())
 		Catch ex as KnopsoOperationException
@@ -31,7 +33,7 @@ Public Class Application
 		Dim voucher as KnopsoVoucher
 		voucher = CreateVoucher(1.99, "Hvala")
 		System.Console.WriteLine("Voucher created!")
-		System.Console.WriteLine("  Code: " + voucher.code)
+		System.Console.WriteLine("  Voucher code: " + voucher.code)
 		System.Console.WriteLine("  Redirect URL: " + voucher.GetRedirectURL())
 	End Sub
 End Class
