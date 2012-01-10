@@ -1,15 +1,17 @@
 Imports Knopso
 
 Public Class Application
+	Private Const KnopsoUsername As String = "test@knopso.com"
+	Private Const KnopsoPassword As String = "123"
+	
 	Public Shared Function CreateVoucher(amount as double, msg as string) as KnopsoVoucher
-		Dim username as string, password as string, pwhash as string
-		username = "test@knopso.com"
-		password = "123"
-		pwhash = KnopsoBroker.SHA1(password)
+		Dim KnopsoPasswordHash As String = KnopsoBroker.SHA1(KnopsoPassword)
 		
 		Dim knopso as KnopsoBroker
-		knopso = new KnopsoBroker(username, pwhash, "https://broker.knopso.lo:8004", "https://www.knopso.lo")
-		knopso = new KnopsoBroker(username, pwhash)
+		' sandbox:
+		knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash, "https://broker.sandbox.knopso.com:8004", "http://www.sandbox.knopso.com")
+		' production:
+		'knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash)
 		
 		Dim voucher as KnopsoVoucher
 		Try
@@ -30,5 +32,6 @@ Public Class Application
 		voucher = CreateVoucher(1.99, "Hvala")
 		System.Console.WriteLine("Voucher created!")
 		System.Console.WriteLine("  Code: " + voucher.code)
+		System.Console.WriteLine("  Redirect URL: " + voucher.GetRedirectURL())
 	End Sub
 End Class

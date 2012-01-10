@@ -13,13 +13,17 @@ namespace KnopsoAPIExample {
 		public string baseURL = "http://127.0.0.1:8080";
 		
 		KnopsoBroker knopso = null;
+		private const string username = "test@knopso.com";
+		private const string password = "123";
 
 		public Default() {
-			string username = "test@knopso.com";
-			string password = "123";
 			string pwhash = KnopsoBroker.SHA1(password);
-			//knopso = new KnopsoBroker(username, pwhash, "https://broker.knopso.lo:8004", "https://www.knopso.lo");
-			knopso = new KnopsoBroker(username, pwhash);
+			
+			// during development and testing, use sandbox:
+			knopso = new KnopsoBroker(username, pwhash, "https://broker.sandbox.knopso.com:8004", "http://www.sandbox.knopso.com");
+			
+			// in production, use:
+			//knopso = new KnopsoBroker(username, pwhash);
 		}
 
 		private void LogAppend(string msg) {
