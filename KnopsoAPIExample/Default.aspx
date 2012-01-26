@@ -2,21 +2,34 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head runat="server">
-	<title>Default</title>
+	<title>KnopsoAPIExample</title>
 	
-    <!-- purchase-in-popup magical part -->
-    <script type="text/javascript" src="http://apps.knopso.com/cdn/knopso-popup/v0.6/knopso.min.js"></script>
+    <script type="text/javascript" src="http://apps.knopso.com/cdn/knopso-popup/v0.7/build/main.min.js"></script>
     <script type="text/javascript">
-    	var home = "<%= baseURL %>";
-    	var objecthome = home + "/?state=access";
-        var sell = new knopso.popupOpener({
-            prologuePage: home+"/knopso-popup/prologue.html",
-            epiloguePage: home+"/knopso-popup/epilogue.html",
-            onSuccess: function(hwnd, token) {
-                window.location = knopso.buildURL(objecthome, {token: token});
+		var siteURL = "<%= baseURL %>";
+		var objectURL = siteURL + "/?state=access";
+		var frontendURL = "<%= knopsoFrontendURL %>";
+			
+        // popup purchase
+        var orderOpener = new knopso.popupOpener({
+            popupURL: siteURL+"/knopso-popup/popup.html",
+            frontendURL: frontendURL,
+            siteURL: siteURL,
+            onSuccess: function(hwnd, args) {
+                window.location = knopso.buildURL(objectURL, {token: args.token, context: args.context});
             }
         });
-    </script>
+        
+        // popup rewarding (voucher)
+        var voucherOpener = new knopso.popupOpener({
+            popupURL: siteURL+"/knopso-popup/popup.html",
+            frontendURL: frontendURL,
+            siteURL: siteURL,
+			onSuccess: function() {
+				alert("Voucher cashed-in.");
+			}
+        });
+	</script>
 
 </head>
 <body style="font-family: sans-serif;">

@@ -10,10 +10,11 @@ using System.Text.RegularExpressions;
 namespace KnopsoAPIExample {
 	
 	public partial class Default : System.Web.UI.Page {
-		public string baseURL = "http://127.0.0.1:8080";
+		public const string baseURL = "http://127.0.0.1:8080";
 		
-		private const string knopsoBackend = "https://broker.sandbox.knopso.com:8004";
-		private const string knopsoFrontend = "http://www.sandbox.knopso.com";
+		public const string knopsoBackendURL = "https://broker.sandbox.knopso.com:8004";
+		public const string knopsoFrontendURL = "http://www.sandbox.knopso.com";
+		
 		private const string knopsoUsername = "test@knopso.com";
 		private const string knopsoPassword = "123";
 		private KnopsoBroker knopso = null;
@@ -22,7 +23,7 @@ namespace KnopsoAPIExample {
 			string knopsoPasswordHash = KnopsoBroker.SHA1(knopsoPassword);
 			
 			// during development and testing, use sandbox:
-			knopso = new KnopsoBroker(knopsoUsername, knopsoPasswordHash, knopsoBackend, knopsoFrontend);
+			knopso = new KnopsoBroker(knopsoUsername, knopsoPasswordHash, knopsoBackendURL, knopsoFrontendURL);
 			
 			// in production, use:
 			//knopso = new KnopsoBroker(knopsoUsername, knopsoPasswordHash);
@@ -64,7 +65,7 @@ namespace KnopsoAPIExample {
 					LogAppend("Order created, Order ID = " + order.id);
 					SetLink(linkAction, "Buy it!", order.GetRedirectURL("my-custom-context"));
 					SetLink(linkActionAlt, "Buy it in a popup!", order.GetPopupURL("my-custom-context"));
-					linkActionAlt.Attributes["onclick"] = "return sell(this);";
+					linkActionAlt.Attributes["onclick"] = "return orderOpener(this);";
 				}
 				break;
 			
@@ -89,9 +90,8 @@ namespace KnopsoAPIExample {
 				KnopsoVoucher voucher = knopso.CreateVoucher(1.99, "here goes a message for the user");
 				LogAppend("Voucher code: " + voucher.code);
 				SetLink(linkAction, "Use this voucher!", voucher.GetRedirectURL());
-				// TODO: popup library should be better adapted for vouchers!
-				//SetLink(linkActionAlt, "Use this voucher in a popup!", voucher.GetPopupURL());
-				//linkActionAlt.Attributes["onclick"] = "return voucher(this);";
+				SetLink(linkActionAlt, "Use this voucher in a popup!", voucher.GetPopupURL());
+				linkActionAlt.Attributes["onclick"] = "return voucherOpener(this);";
 				break;
 				
 			default:
