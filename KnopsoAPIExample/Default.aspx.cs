@@ -64,7 +64,7 @@ namespace KnopsoAPIExample {
 					Session["orderid"] = order.id;
 					LogAppend("Order created, Order ID = " + order.id);
 					SetLink(linkAction, "Buy it!", order.GetRedirectURL("my-custom-context"));
-					SetLink(linkActionAlt, "Buy it in a popup!", order.GetPopupURL("my-custom-context"));
+					SetLink(linkActionAlt, "Buy it in a popup!", order.GetRedirectURL("my-custom-context"));
 					linkActionAlt.Attributes["onclick"] = "return orderOpener(this);";
 				}
 				break;
@@ -90,7 +90,7 @@ namespace KnopsoAPIExample {
 				KnopsoVoucher voucher = knopso.CreateVoucher(1.99, "here goes a message for the user");
 				LogAppend("Voucher code: " + voucher.code);
 				SetLink(linkAction, "Use this voucher!", voucher.GetRedirectURL());
-				SetLink(linkActionAlt, "Use this voucher in a popup!", voucher.GetPopupURL());
+				SetLink(linkActionAlt, "Use this voucher in a popup!", voucher.GetRedirectURL());
 				linkActionAlt.Attributes["onclick"] = "return voucherOpener(this);";
 				break;
 				

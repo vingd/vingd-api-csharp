@@ -26,7 +26,7 @@
             frontendURL: frontendURL,
             siteURL: siteURL,
 			onSuccess: function() {
-				alert("Voucher cashed-in.");
+				document.getElementById("msg").innerHTML = "Voucher cashed-in.";
 			}
         });
 	</script>
@@ -37,7 +37,8 @@
 <asp:Label id="lblResponse" runat="server" Text="" Style="display: block; white-space: pre; margin: 16px 0; font-family: monospace; font-size: 12px;" OnLoad="btnRequest_Load"></asp:Label>
 <asp:HyperLink id="linkAction" runat="server"></asp:HyperLink>
 <asp:HyperLink id="linkActionAlt" runat="server" Style="margin-left: 16px;"></asp:HyperLink>
-
+<div style="margin: 16px 0" id="msg"></div>
+		
 <div style="margin-top: 32px"><a href="/">Back to home</a></div>
 <hr/>
 <span style="font-size: smaller">(debugging) Execute a custom backend request:</span>
