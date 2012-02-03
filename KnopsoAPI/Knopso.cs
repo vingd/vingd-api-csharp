@@ -315,6 +315,8 @@ namespace Knopso {
 			
 			return new KnopsoPurchase {
 				huid = (string)response["huid"],
+				oid = Convert.ToInt64(oid),
+				orderid = Convert.ToInt64(response["orderid"]),
 				purchaseid = Convert.ToInt64(response["purchaseid"]),
 				transferid = Convert.ToInt64(response["transferid"]),
 				reclaimed = Convert.ToBoolean(response["reclaimed"])
@@ -417,6 +419,8 @@ namespace Knopso {
 	
 	public struct KnopsoPurchase {
 		public string huid;
+		public long oid;
+		public long orderid;
 		public long purchaseid;
 		public long transferid;
 		public bool reclaimed;
