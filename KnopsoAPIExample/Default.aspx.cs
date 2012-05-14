@@ -13,7 +13,7 @@ namespace KnopsoAPIExample {
 		public const string baseURL = "http://127.0.0.1:8080";
 		
 		public const string knopsoBackendURL = "https://broker.sandbox.knopso.com:8004";
-		public const string knopsoFrontendURL = "http://www.sandbox.knopso.com";
+		public const string knopsoFrontendURL = "http://www.sandbox.vingd.com";
 		
 		private const string knopsoUsername = "test@knopso.com";
 		private const string knopsoPassword = "123";

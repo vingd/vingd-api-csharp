@@ -58,7 +58,7 @@ namespace Knopso {
 	public class KnopsoBroker {
 		// default knopso (server) backend and (user) frontend base urls
 		public const string defaultBackendURL = "https://broker.knopso.com:8004";
-		public const string defaultFrontendURL = "https://www.knopso.com";
+		public const string defaultFrontendURL = "https://www.vingd.com";
 
 		// default order lifespan: 15min
 		public TimeSpan defaultOrderExpiry = new TimeSpan(0, 15, 0);
@@ -161,7 +161,7 @@ namespace Knopso {
 				res = (HttpWebResponse)req.GetResponse();
 			} catch (WebException e) {
 				if (e.Status != WebExceptionStatus.ProtocolError || null == (res = e.Response as HttpWebResponse)) {
-					throw new KnopsoTransportException("Connecting to Knopso Broker failed.", e);
+					throw new KnopsoTransportException("Connecting to Vingd Broker failed.", e);
 				}
 			}
 			
@@ -170,7 +170,7 @@ namespace Knopso {
 				StreamReader sr = new StreamReader(res.GetResponseStream(), encoder);
 				jsonContent = sr.ReadToEnd();
 			} catch (Exception e) {
-				throw new KnopsoTransportException("Communication with Knopso Broker failed.", e);
+				throw new KnopsoTransportException("Communication with Vingd Broker failed.", e);
 			} finally {
 				res.Close();
 			}

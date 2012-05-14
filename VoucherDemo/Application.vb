@@ -2,7 +2,7 @@ Imports Knopso
 
 Public Class Application
 	Private Const KnopsoBackend As String = "https://broker.sandbox.knopso.com:8004"
-	Private Const KnopsoFrontend As String = "http://www.sandbox.knopso.com"
+	Private Const KnopsoFrontend As String = "http://www.sandbox.vingd.com"
 	Private Const KnopsoUsername As String = "test@knopso.com"
 	Private Const KnopsoPassword As String = "123"
 	

@@ -4,7 +4,7 @@
 <head runat="server">
 	<title>KnopsoAPIExample</title>
 	
-    <script type="text/javascript" src="http://apps.knopso.com/cdn/knopso-popup/v0.7/build/main.min.js"></script>
+    <script type="text/javascript" src="http://apps.vingd.com/cdn/knopso-popup/v0.8/build/main.min.js"></script>
     <script type="text/javascript">
 		var siteURL = "<%= baseURL %>";
 		var objectURL = siteURL + "/?state=access";
