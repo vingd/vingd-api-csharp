@@ -79,6 +79,9 @@ namespace KnopsoAPIExample {
 				LogAppend("TODO: serve the content.");
 				knopso.CommitPurchase(purchase);
 				LogAppend("Purchase committed.");
+				// test direct rewarding:
+				knopso.RewardUser(purchase.huid, 1.25, "Custom transaction description");
+				LogAppend("User rewarded.");
 				break;
 			
 			case "custom-get-request":

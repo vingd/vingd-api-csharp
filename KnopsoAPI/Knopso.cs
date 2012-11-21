@@ -379,6 +379,28 @@ namespace Knopso {
 		public KnopsoVoucher CreateVoucher(double amountVouched) {
 			return CreateVoucher(amountVouched, DateTime.Now.Add(defaultVoucherExpiry), null);
 		}
+		
+		/**
+		 * Rewards user identified with `huid`, directly with `amount` (in OKA).
+		 * 
+		 * Hashed User ID (huid) is bound to account of the authenticated user 
+		 * (making the request). Transaction description can be set via `description` 
+		 * parameter.
+		 * 
+		 * On failure, Knopso Exception is thrown.
+		 * 
+		 */
+		public void RewardUser(string huid, double amount, string description) {
+			var parameters = new Dictionary<string, object>();
+			parameters.Add("huid_to", huid);
+			parameters.Add("amount", (int)(amount * 100));
+			parameters.Add("description", description);
+			Request("POST", "/rewards/", parameters);
+		}
+		
+		public void RewardUser(string huid, double amount) {
+			RewardUser(huid, amount, null);
+		}
 
 	}
 
