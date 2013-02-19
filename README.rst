@@ -79,7 +79,8 @@ URL expanded with purchase verification parameters.
 
 .. code-block:: csharp
 
-    // User confirmed purchase on Vingd frontend and came back to http://localhost:666/?token={"oid":<oid>,"tid":<tid>}
+    // User confirmed purchase on Vingd frontend
+    // and came back to http://localhost:666/?token={"oid":<oid>,"tid":<tid>}
     
     // Verify purchase with received parameters.
     VingdPurchase purchase = v.VerifyPurchase(Request["token"]);
@@ -105,14 +106,14 @@ Reward user with vingd:
     // Reward user.
     v.RewardUser(rewardHUID, rewardAmount, rewardDescription);
     
-For more examples, see ``Examples`` in source.
+For more examples, see ``Examples/`` in source.
 
 
 Documentation
 -------------
 
 Full C# library documentation is not yet available, but you can browse through
-semantically equivalent `PHP docs`_ and `Python docs`. Also, feel free to
+semantically equivalent `PHP docs`_ and `Python docs`_. Also, feel free to
 inspect the ``Vingd`` class code/comments.
 
 
