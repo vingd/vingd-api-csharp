@@ -12,10 +12,10 @@ namespace KnopsoAPIExample {
 	public partial class Default : System.Web.UI.Page {
 		public const string baseURL = "http://127.0.0.1:8080";
 		
-		public const string knopsoBackendURL = "https://broker.sandbox.knopso.com:8004";
-		public const string knopsoFrontendURL = "http://www.sandbox.vingd.com";
+		public const string knopsoBackendURL = KnopsoBroker.sandboxEndpointURL;
+		public const string knopsoFrontendURL = KnopsoBroker.sandboxFrontendURL;
 		
-		private const string knopsoUsername = "test@knopso.com";
+		private const string knopsoUsername = "test@vingd.com";
 		private const string knopsoPassword = "123";
 		private KnopsoBroker knopso = null;
 

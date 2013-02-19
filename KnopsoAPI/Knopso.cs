@@ -56,9 +56,19 @@ namespace Knopso {
 
 
 	public class KnopsoBroker {
-		// default knopso (server) backend and (user) frontend base urls
-		public const string defaultBackendURL = "https://broker.knopso.com:8004";
-		public const string defaultFrontendURL = "https://www.vingd.com";
+        public const string userAgent = "vingd-api-csharp/1.1";
+		
+		// note: mono by default has empty trusted CA store
+		//       Vingd uses DigiCert's certificate, so you should at least add their CA cert
+		//       (see http://www.mono-project.com/FAQ:_Security on how to do it)
+
+		// production/default Vingd endpoint and Vingd user frontend base
+		public const string productionEndpointURL = "https://api.vingd.com/broker/v1";
+		public const string productionFrontendURL = "https://www.vingd.com";
+        
+        // sandbox/testing Vingd endpoint and Vingd user frontend base
+		public const string sandboxEndpointURL = "https://api.vingd.com/sandbox/broker/v1";
+		public const string sandboxFrontendURL = "http://www.sandbox.vingd.com";
 
 		// default order lifespan: 15min
 		public TimeSpan defaultOrderExpiry = new TimeSpan(0, 15, 0);
@@ -73,15 +83,15 @@ namespace Knopso {
 		// connection parameters
 		private string username = null;
 		private string pwhash = null;
-		private string backendURL = KnopsoBroker.defaultBackendURL;
-		private string frontendURL = KnopsoBroker.defaultFrontendURL;
+		private string backendURL = KnopsoBroker.productionEndpointURL;
+		private string frontendURL = KnopsoBroker.productionFrontendURL;
 
 		public KnopsoBroker(string username, string pwhash, string backend, string frontend) {
 			init(username, pwhash, backend, frontend);
 		}
 
 		public KnopsoBroker(string username, string pwhash) {
-			init(username, pwhash, KnopsoBroker.defaultBackendURL, KnopsoBroker.defaultFrontendURL);
+			init(username, pwhash, KnopsoBroker.productionEndpointURL, KnopsoBroker.productionFrontendURL);
 		}
 
 		private void init(string username, string pwhash, string backendURL, string frontendURL) {
@@ -89,9 +99,6 @@ namespace Knopso {
 			this.pwhash = pwhash;
 			this.backendURL = backendURL;
 			this.frontendURL = frontendURL;
-			
-			// hack: do not verify knopso backend self-signed cert
-			ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 		}
 
 		/**
@@ -132,7 +139,7 @@ namespace Knopso {
 			UTF8Encoding encoder = new UTF8Encoding(false);
 			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(backendURL + resource);
 			req.Method = method;
-			req.UserAgent = "KAPI/C#";
+			req.UserAgent = KnopsoBroker.userAgent;
 			
 			// hack: seems like the standard Basic Http Auth in .NET sends auth header ONLY AFTER 
 			// it receives the "401 Unauthenticated" response. PreAuthenticate is correcting this
