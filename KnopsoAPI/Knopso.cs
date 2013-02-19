@@ -11,17 +11,17 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 
-namespace Knopso {
+namespace Vingd {
 	
-	public class KnopsoOperationException : Exception {
+	public class VingdOperationException : Exception {
 		protected string context = null;
 		protected HttpStatusCode code = HttpStatusCode.Conflict;
 
-		public KnopsoOperationException(string message, string context) : this(message, context, HttpStatusCode.Conflict, null) {}
+		public VingdOperationException(string message, string context) : this(message, context, HttpStatusCode.Conflict, null) {}
 		
-		public KnopsoOperationException(string message, string context, HttpStatusCode code) : this(message, context, code, null) {}
+		public VingdOperationException(string message, string context, HttpStatusCode code) : this(message, context, code, null) {}
 		
-		public KnopsoOperationException(string message, string context, HttpStatusCode code, Exception inner) 
+		public VingdOperationException(string message, string context, HttpStatusCode code, Exception inner) 
 		: base(message, inner) {
 			this.context = context;
 			this.code = code;
@@ -33,19 +33,19 @@ namespace Knopso {
 	}
 
 	
-	public class KnopsoTransportException : Exception {
+	public class VingdTransportException : Exception {
 		protected string context = null;
 		protected HttpStatusCode code = HttpStatusCode.Conflict;
 
-		public KnopsoTransportException(string message, Exception inner) : base(message, inner) {}
+		public VingdTransportException(string message, Exception inner) : base(message, inner) {}
 		
-		public KnopsoTransportException(string message, string context) : this(message, HttpStatusCode.Conflict, context) {}
+		public VingdTransportException(string message, string context) : this(message, HttpStatusCode.Conflict, context) {}
 		
-		public KnopsoTransportException(string message, HttpStatusCode code, Exception inner) : base(message, inner) {
+		public VingdTransportException(string message, HttpStatusCode code, Exception inner) : base(message, inner) {
 			this.code = code;
 		}
 		
-		public KnopsoTransportException(string message, HttpStatusCode code, string context) : this(message, code, (Exception)null) {
+		public VingdTransportException(string message, HttpStatusCode code, string context) : this(message, code, (Exception)null) {
 			this.context = context;
 		}
 
@@ -55,7 +55,7 @@ namespace Knopso {
 	}
 
 
-	public class KnopsoBroker {
+	public class VingdClient {
         public const string userAgent = "vingd-api-csharp/1.1";
 		
 		// note: mono by default has empty trusted CA store
@@ -83,15 +83,15 @@ namespace Knopso {
 		// connection parameters
 		private string username = null;
 		private string pwhash = null;
-		private string backendURL = KnopsoBroker.productionEndpointURL;
-		private string frontendURL = KnopsoBroker.productionFrontendURL;
+		private string backendURL = VingdClient.productionEndpointURL;
+		private string frontendURL = VingdClient.productionFrontendURL;
 
-		public KnopsoBroker(string username, string pwhash, string backend, string frontend) {
+		public VingdClient(string username, string pwhash, string backend, string frontend) {
 			init(username, pwhash, backend, frontend);
 		}
 
-		public KnopsoBroker(string username, string pwhash) {
-			init(username, pwhash, KnopsoBroker.productionEndpointURL, KnopsoBroker.productionFrontendURL);
+		public VingdClient(string username, string pwhash) {
+			init(username, pwhash, VingdClient.productionEndpointURL, VingdClient.productionFrontendURL);
 		}
 
 		private void init(string username, string pwhash, string backendURL, string frontendURL) {
@@ -129,17 +129,17 @@ namespace Knopso {
 		}
 
 		/**
-		 * Makes a generic Knopso Broker request.
+		 * Makes a generic Vingd Broker request.
 		 * 
-		 * Returns parsed JSON response in object; raises KnopsoTransportException or 
-		 * KnopsoOperationException on failure.
+		 * Returns parsed JSON response in object; raises VingdTransportException or 
+		 * VingdOperationException on failure.
 		 * 
 		 */
 		public object Request (string method, string resource, object parameters) {
 			UTF8Encoding encoder = new UTF8Encoding(false);
 			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(backendURL + resource);
 			req.Method = method;
-			req.UserAgent = KnopsoBroker.userAgent;
+			req.UserAgent = VingdClient.userAgent;
 			
 			// hack: seems like the standard Basic Http Auth in .NET sends auth header ONLY AFTER 
 			// it receives the "401 Unauthenticated" response. PreAuthenticate is correcting this
@@ -168,7 +168,7 @@ namespace Knopso {
 				res = (HttpWebResponse)req.GetResponse();
 			} catch (WebException e) {
 				if (e.Status != WebExceptionStatus.ProtocolError || null == (res = e.Response as HttpWebResponse)) {
-					throw new KnopsoTransportException("Connecting to Vingd Broker failed.", e);
+					throw new VingdTransportException("Connecting to Vingd Broker failed.", e);
 				}
 			}
 			
@@ -177,7 +177,7 @@ namespace Knopso {
 				StreamReader sr = new StreamReader(res.GetResponseStream(), encoder);
 				jsonContent = sr.ReadToEnd();
 			} catch (Exception e) {
-				throw new KnopsoTransportException("Communication with Vingd Broker failed.", e);
+				throw new VingdTransportException("Communication with Vingd Broker failed.", e);
 			} finally {
 				res.Close();
 			}
@@ -186,7 +186,7 @@ namespace Knopso {
 			try {
 				dictContent = (Dictionary<string, object>)JSONParse(jsonContent);
 			} catch (Exception e) {
-				throw new KnopsoTransportException("Non-JSON response or unexpected JSON structure.", res.StatusCode, e);
+				throw new VingdTransportException("Non-JSON response or unexpected JSON structure.", res.StatusCode, e);
 			}
 			
 			// return data response if request successful
@@ -196,20 +196,20 @@ namespace Knopso {
 				try {
 					data = (object)dictContent["data"];
 				} catch (Exception e) {
-					throw new KnopsoTransportException("Invalid JSON data response.", res.StatusCode, e);
+					throw new VingdTransportException("Invalid JSON data response.", res.StatusCode, e);
 				}
 				return data;
 			}
 			
-			// raise exception describing the knopso error condition
+			// raise exception describing the vingd error condition
 			string message, context;
 			try {
 				message = (string)dictContent["message"];
 				context = (string)dictContent["context"];
 			} catch (Exception e) {
-				throw new KnopsoTransportException("Invalid JSON error response.", res.StatusCode, e);
+				throw new VingdTransportException("Invalid JSON error response.", res.StatusCode, e);
 			}
-			throw new KnopsoOperationException(message, context, res.StatusCode);
+			throw new VingdOperationException(message, context, res.StatusCode);
 		}
 
 		private object GetDictListElem(Dictionary<string, object> dict, string key, int index) {
@@ -225,19 +225,19 @@ namespace Knopso {
 
 		private Dictionary<string, object> ConvertToDict(object response) {
 			if (response.GetType() != typeof(Dictionary<string, object>)) {
-				throw new KnopsoTransportException("Unexpected service response; expecting JSON dictionary.", "Decode");
+				throw new VingdTransportException("Unexpected service response; expecting JSON dictionary.", "Decode");
 			}
 			return (Dictionary<string, object>)response;
 		}
 
 		/**
-		 * Registers (enrolls) an object into the Knopso Registry.
+		 * Registers (enrolls) an object into the Vingd Objects Registry.
 		 * 
 		 * For minimal object description ({'name': <name>, 'url': <callback_url>}), 
 		 * use RegisterObject(string name, string url) method.
 		 * 
 		 */
-		public long RegisterObject (object description) {
+		public long CreateObject (object description) {
 			var parameters = new Dictionary<string, object>();
 			parameters.Add("class", (int)ObjectClassID.Generic);
 			parameters.Add("description", description);
@@ -247,7 +247,7 @@ namespace Knopso {
 			
 			var error = (Dictionary<string, object>)GetDictListElem(response, "errors", 0);
 			if (error != null) {
-				throw new KnopsoOperationException((string)error["desc"], (string)error["code"]);
+				throw new VingdOperationException((string)error["desc"], (string)error["code"]);
 			}
 			
 			object oid = GetDictListElem(response, "oids", 0);
@@ -255,22 +255,22 @@ namespace Knopso {
 				return Convert.ToInt64(oid);
 			}
 			
-			throw new KnopsoTransportException("Unexpected service response.", "Decode");
+			throw new VingdTransportException("Unexpected service response.", "Decode");
 		}
 
-		public long RegisterObject (string name, string url) {
+		public long CreateObject (string name, string url) {
 			var description = new Dictionary<string, string>();
 			description.Add("name", name);
 			description.Add("url", url);
-			return RegisterObject((object)description);
+			return CreateObject((object)description);
 		}
 
 		/**
-		 * Contacts Knopso Broker and generates a new order for selling the object (oid)
+		 * Contacts Vingd Broker and generates a new order for selling the object (oid)
      	 * under the defined terms (price). Order shall be valid until expiresLocal.
      	 * 
 		 */
-		public KnopsoOrder CreateOrder (long oid, double price, DateTime expiresLocal) {
+		public VingdOrder CreateOrder (long oid, double price, DateTime expiresLocal) {
 			DateTimeOffset expiresWithTimezone = new DateTimeOffset(expiresLocal, TimeZone.CurrentTimeZone.GetUtcOffset(expiresLocal));
 			var parameters = new Dictionary<string, object>();
 			parameters.Add("price", (int)(price * 100));
@@ -281,46 +281,46 @@ namespace Knopso {
 			
 			var error = (Dictionary<string, object>)GetDictListElem(response, "errors", 0);
 			if (error != null) {
-				throw new KnopsoOperationException((string)error["desc"], (string)error["code"]);
+				throw new VingdOperationException((string)error["desc"], (string)error["code"]);
 			}
 			
 			object id = GetDictListElem(response, "ids", 0);
 			if (id == null) {
-				throw new KnopsoTransportException("Unexpected service response.", "Decode");
+				throw new VingdTransportException("Unexpected service response.", "Decode");
 			}
 			long orderid = Convert.ToInt64(id);
 			
-			return new KnopsoOrder(orderid, oid, price, expiresWithTimezone, frontendURL);
+			return new VingdOrder(orderid, oid, price, expiresWithTimezone, frontendURL);
 		}
 
-		public KnopsoOrder CreateOrder(long oid, double price, TimeSpan expiry) {
+		public VingdOrder CreateOrder(long oid, double price, TimeSpan expiry) {
 			return CreateOrder(oid, price, DateTime.Now.Add(expiry));
 		}
 
-		public KnopsoOrder CreateOrder(long oid, double price) {
+		public VingdOrder CreateOrder(long oid, double price) {
 			return CreateOrder(oid, price, DateTime.Now.Add(defaultOrderExpiry));
 		}
 
 		/**
-		 * Verifies the token of purchase thru Knopso Broker.
+		 * Verifies the token of purchase thru Vingd Broker.
 	     *
-	     * If token was invalid (purchase can not be verified), Knopso Exception is thrown.
+	     * If token was invalid (purchase can not be verified), VingdOperationException is thrown.
 	     * 
 		 */
-		public KnopsoPurchase VerifyToken(string token) {
+		public VingdPurchase VerifyPurchase(string token) {
 			string oid, tid;
 			try {
 				var tokenDict = (Dictionary<string, object>)JSONParse(token);
 				oid = (string)tokenDict["oid"];
 				tid = (string)tokenDict["tid"];
 			} catch {
-				throw new KnopsoTransportException("Invalid token.", "TokenVerification");
+				throw new VingdTransportException("Invalid token.", "TokenVerification");
 			}
 			
 			object responseRaw = Request("GET", "/objects/" + oid + "/tokens/" + tid, null);
 			var response = ConvertToDict(responseRaw);
 			
-			return new KnopsoPurchase {
+			return new VingdPurchase {
 				huid = (string)response["huid"],
 				oid = Convert.ToInt64(oid),
 				orderid = Convert.ToInt64(response["orderid"]),
@@ -336,27 +336,27 @@ namespace Knopso {
 		 * 
 		 * If you do not call CommitPurchase() user shall be automatically refunded.
 		 * 
-		 * On failure, Knopso Exception is thrown.
+		 * On failure, VingdOperationException is thrown.
 		 * 
 		 */
-		public void CommitPurchase(KnopsoPurchase purchase) {
+		public void CommitPurchase(VingdPurchase purchase) {
 			var parameters = new Dictionary<string, object>();
 			parameters.Add("transferid", purchase.transferid);
 			Request("PUT", "/purchases/" + purchase.purchaseid, parameters);
 		}
 		
 		/**
-		 * Creates a new Knopso voucher.
+		 * Creates a new Vingd voucher.
 		 * 
-		 * The voucher created vouches the `amountVouched` (in OKA) to the bearer 
+		 * The voucher created vouches the `amountVouched` (in VINGDs) to the bearer 
 		 * of the voucher (if used until `expiresLocal`). 
-		 * Upon claiming the vouched OKAs, user shall be presented with `userMessage`.
+		 * Upon claiming the vouched vingds, user shall be presented with `userMessage`.
 		 * 
-		 * The key datum to present to the user is voucher claim URL on Knopso frontend, 
+		 * The key datum to present to the user is voucher claim URL on Vingd frontend,
 		 * or alternatively the voucher code (returned .code / .GetRedirectURL()).
 		 * 
 		 */
-		public KnopsoVoucher CreateVoucher(double amountVouched, DateTime expiresLocal, string userMessage) {
+		public VingdVoucher CreateVoucher(double amountVouched, DateTime expiresLocal, string userMessage) {
 			DateTimeOffset expiresWithTimezone = new DateTimeOffset(expiresLocal, TimeZone.CurrentTimeZone.GetUtcOffset(expiresLocal));
 			var parameters = new Dictionary<string, object>();
 			parameters.Add("amount", (int)(amountVouched * 100));
@@ -366,7 +366,7 @@ namespace Knopso {
 			object responseRaw = Request("POST", "/vouchers/", parameters);
 			var response = ConvertToDict(responseRaw);
 			
-			return new KnopsoVoucher(
+			return new VingdVoucher(
 				amountVouched,
 				Convert.ToInt64(response["id_fort_transfer"]),
 				expiresWithTimezone,
@@ -375,26 +375,26 @@ namespace Knopso {
 			);
 		}
 		
-		public KnopsoVoucher CreateVoucher(double amountVouched, TimeSpan expiry, string userMessage) {
+		public VingdVoucher CreateVoucher(double amountVouched, TimeSpan expiry, string userMessage) {
 			return CreateVoucher(amountVouched, DateTime.Now.Add(expiry), userMessage);
 		}
 
-		public KnopsoVoucher CreateVoucher(double amountVouched, string userMessage) {
+		public VingdVoucher CreateVoucher(double amountVouched, string userMessage) {
 			return CreateVoucher(amountVouched, DateTime.Now.Add(defaultVoucherExpiry), userMessage);
 		}
 		
-		public KnopsoVoucher CreateVoucher(double amountVouched) {
+		public VingdVoucher CreateVoucher(double amountVouched) {
 			return CreateVoucher(amountVouched, DateTime.Now.Add(defaultVoucherExpiry), null);
 		}
 		
 		/**
-		 * Rewards user identified with `huid`, directly with `amount` (in OKA).
+		 * Rewards user identified with `huid`, directly with `amount` (in VINGDs).
 		 * 
 		 * Hashed User ID (huid) is bound to account of the authenticated user 
 		 * (making the request). Transaction description can be set via `description` 
 		 * parameter.
 		 * 
-		 * On failure, Knopso Exception is thrown.
+		 * On failure, Vingd Exception is thrown.
 		 * 
 		 */
 		public void RewardUser(string huid, double amount, string description) {
@@ -412,7 +412,7 @@ namespace Knopso {
 	}
 
 	
-	public struct KnopsoOrder {
+	public struct VingdOrder {
 		public long id;
 		public long oid;
 		public double price;
@@ -420,7 +420,7 @@ namespace Knopso {
 
 		private string frontendURL;
 
-		public KnopsoOrder(long id, long oid, double price, DateTimeOffset expires, string frontendURL) {
+		public VingdOrder(long id, long oid, double price, DateTimeOffset expires, string frontendURL) {
 			this.id = id;
 			this.oid = oid;
 			this.price = price;
@@ -446,7 +446,7 @@ namespace Knopso {
 	}
 
 	
-	public struct KnopsoPurchase {
+	public struct VingdPurchase {
 		public string huid;
 		public long oid;
 		public long orderid;
@@ -456,7 +456,7 @@ namespace Knopso {
 	}
 	
 	
-	public struct KnopsoVoucher {
+	public struct VingdVoucher {
 		public double amount;
 		public long transferid;
 		public DateTimeOffset expires;
@@ -464,7 +464,7 @@ namespace Knopso {
 		
 		private string frontendURL;
 		
-		public KnopsoVoucher(double amount, long transferid, DateTimeOffset expires, string code, string frontendURL) {
+		public VingdVoucher(double amount, long transferid, DateTimeOffset expires, string code, string frontendURL) {
 			this.amount = amount;
 			this.transferid = transferid;
 			this.expires = expires;

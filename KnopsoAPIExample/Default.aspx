@@ -4,27 +4,29 @@
 <head runat="server">
 	<title>KnopsoAPIExample</title>
 	
-    <script type="text/javascript" src="http://apps.vingd.com/cdn/knopso-popup/v0.8/build/main.min.js"></script>
+    <script type="text/javascript" src="http://apps.vingd.com/cdn/vingd-popup/v0.8/build/main.min.js"></script>
     <script type="text/javascript">
 		var siteURL = "<%= baseURL %>";
 		var objectURL = siteURL + "/?state=access";
-		var frontendURL = "<%= knopsoFrontendURL %>";
+		var frontendURL = "<%= vingdFrontendURL %>";
 			
         // popup purchase
-        var orderOpener = new knopso.popupOpener({
-            popupURL: siteURL+"/knopso-popup/popup.html",
+        var orderOpener = new vingd.popupOpener({
+            popupURL: siteURL+"/popup.html",
             frontendURL: frontendURL,
             siteURL: siteURL,
+			lang: 'en',
             onSuccess: function(hwnd, args) {
-                window.location = knopso.buildURL(objectURL, {token: args.token, context: args.context});
+                window.location = vingd.buildURL(objectURL, {token: args.token, context: args.context});
             }
         });
         
         // popup rewarding (voucher)
-        var voucherOpener = new knopso.popupOpener({
-            popupURL: siteURL+"/knopso-popup/popup.html",
+        var voucherOpener = new vingd.popupOpener({
+            popupURL: siteURL+"/popup.html",
             frontendURL: frontendURL,
             siteURL: siteURL,
+			lang: 'en',
 			onSuccess: function() {
 				document.getElementById("msg").innerHTML = "Voucher cashed-in.";
 			}

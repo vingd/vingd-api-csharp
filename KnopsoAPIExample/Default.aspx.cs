@@ -2,7 +2,7 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Knopso;
+using Vingd;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -12,21 +12,21 @@ namespace KnopsoAPIExample {
 	public partial class Default : System.Web.UI.Page {
 		public const string baseURL = "http://127.0.0.1:8080";
 		
-		public const string knopsoBackendURL = KnopsoBroker.sandboxEndpointURL;
-		public const string knopsoFrontendURL = KnopsoBroker.sandboxFrontendURL;
+		public const string vingdEndpointURL = VingdClient.sandboxEndpointURL;
+		public const string vingdFrontendURL = VingdClient.sandboxFrontendURL;
 		
-		private const string knopsoUsername = "test@vingd.com";
-		private const string knopsoPassword = "123";
-		private KnopsoBroker knopso = null;
+		private const string vingdUsername = "test@vingd.com";
+		private const string vingdPassword = "123";
+		private VingdClient vingd = null;
 
 		public Default() {
-			string knopsoPasswordHash = KnopsoBroker.SHA1(knopsoPassword);
+			string vingdPasswordHash = VingdClient.SHA1(vingdPassword);
 			
 			// during development and testing, use sandbox:
-			knopso = new KnopsoBroker(knopsoUsername, knopsoPasswordHash, knopsoBackendURL, knopsoFrontendURL);
+			vingd = new VingdClient(vingdUsername, vingdPasswordHash, vingdEndpointURL, vingdFrontendURL);
 			
 			// in production, use:
-			//knopso = new KnopsoBroker(knopsoUsername, knopsoPasswordHash);
+			//vingd = new VingdClient(vingdUsername, vingdPasswordHash);
 		}
 
 		private void LogAppend(string msg) {
@@ -43,7 +43,7 @@ namespace KnopsoAPIExample {
 		}
 		
 		private string ObjectDump(object data) {
-			return new JsonFormatter(knopso.JSONStringify(data)).Format();
+			return new JsonFormatter(vingd.JSONStringify(data)).Format();
 		}
 
 		
@@ -51,7 +51,7 @@ namespace KnopsoAPIExample {
 			switch (Request["state"]) {
 			
 			case "register":
-				Session["oid"] = knopso.RegisterObject("C# test object", baseURL+"/?state=access");
+				Session["oid"] = vingd.CreateObject("C# test object", baseURL+"/?state=access");
 				LogAppend("Object registered, Object ID = " + Session["oid"]);
 				SetLink(linkAction, "Create an order for this object.", "/?state=order");
 				break;
@@ -60,7 +60,7 @@ namespace KnopsoAPIExample {
 				if (Session["oid"] == null) {
 					SetLink(linkAction, "Register an object first.", "/?state=register");
 				} else {
-					KnopsoOrder order = knopso.CreateOrder((long)Session["oid"], 1.99);
+					VingdOrder order = vingd.CreateOrder((long)Session["oid"], 1.99);
 					Session["orderid"] = order.id;
 					LogAppend("Order created, Order ID = " + order.id);
 					SetLink(linkAction, "Buy it!", order.GetRedirectURL("my-custom-context"));
@@ -72,25 +72,25 @@ namespace KnopsoAPIExample {
 			case "access":
 				string context = Request["context"];
 				string token = Request["token"];
-				KnopsoPurchase purchase = knopso.VerifyToken(token);
+				VingdPurchase purchase = vingd.VerifyPurchase(token);
 				LogAppend("Context: " + context);
 				LogAppend("Purchase: " + ObjectDump(purchase));
 				// serve the content, then commit
 				LogAppend("TODO: serve the content.");
-				knopso.CommitPurchase(purchase);
+				vingd.CommitPurchase(purchase);
 				LogAppend("Purchase committed.");
 				// test direct rewarding:
-				knopso.RewardUser(purchase.huid, 1.25, "Custom transaction description");
+				vingd.RewardUser(purchase.huid, 1.25, "Custom transaction description");
 				LogAppend("User rewarded.");
 				break;
 			
 			case "custom-get-request":
-				object data = knopso.Request("GET", txtUrl.Text, null);
+				object data = vingd.Request("GET", txtUrl.Text, null);
 				LogAppend("Response: " + ObjectDump(data));
 				break;
 			
 			case "voucher":
-				KnopsoVoucher voucher = knopso.CreateVoucher(1.99, "here goes a message for the user");
+				VingdVoucher voucher = vingd.CreateVoucher(1.99, "here goes a message for the user");
 				LogAppend("Voucher code: " + voucher.code);
 				SetLink(linkAction, "Use this voucher!", voucher.GetRedirectURL());
 				SetLink(linkActionAlt, "Use this voucher in a popup!", voucher.GetRedirectURL());
@@ -109,9 +109,9 @@ namespace KnopsoAPIExample {
 			try {
 				HandlePageRequest();
 				
-			} catch (KnopsoTransportException ex) {
+			} catch (VingdTransportException ex) {
 				LogAppend(ex.ToString());
-			} catch (KnopsoOperationException ex) {
+			} catch (VingdOperationException ex) {
 				LogAppend(ex.ToString());
 			} catch (Exception ex) {
 				LogAppend("Unhandled exception: " + ex);

@@ -1,24 +1,24 @@
-Imports Knopso
+Imports Vingd
 
 Public Class Application
-	Private Const KnopsoUsername As String = "test@vingd.com"
-	Private Const KnopsoPassword As String = "123"
+	Private Const VingdUsername As String = "test@vingd.com"
+	Private Const VingdPassword As String = "123"
 	
-	Public Shared Function CreateVoucher(amount as double, msg as string) as KnopsoVoucher
-		Dim KnopsoPasswordHash As String = KnopsoBroker.SHA1(KnopsoPassword)
+	Public Shared Function CreateVoucher(amount as double, msg as string) as VingdVoucher
+		Dim VingdPasswordHash As String = VingdClient.SHA1(VingdPassword)
 		
-		Dim knopso as KnopsoBroker
+		Dim vingd as VingdClient
 		' sandbox:
-		knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash, KnopsoBroker.sandboxEndpointURL, KnopsoBroker.sandboxFrontendURL)
+		vingd = new VingdClient(VingdUsername, VingdPasswordHash, VingdClient.sandboxEndpointURL, VingdClient.sandboxFrontendURL)
 		' production:
-		'knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash)
+		'vingd = new VingdClient(VingdUsername, VingdPasswordHash)
 		
-		Dim voucher as KnopsoVoucher
+		Dim voucher as VingdVoucher
 		Try
-			voucher = knopso.CreateVoucher(amount, msg)
-		Catch ex as KnopsoTransportException
+			voucher = vingd.CreateVoucher(amount, msg)
+		Catch ex as VingdTransportException
 			System.Console.WriteLine(ex.ToString())
-		Catch ex as KnopsoOperationException
+		Catch ex as VingdOperationException
 			System.Console.WriteLine(ex.ToString())
 		Catch ex as Exception
 			System.Console.WriteLine("Unhandled exception: " & ex.ToString())
@@ -28,7 +28,7 @@ Public Class Application
 	End Function
 	
 	Public Shared Sub Main()
-		Dim voucher as KnopsoVoucher
+		Dim voucher as VingdVoucher
 		voucher = CreateVoucher(1.99, "Thank you!")
 		System.Console.WriteLine("Voucher created!")
 		System.Console.WriteLine("  Voucher code: " + voucher.code)
