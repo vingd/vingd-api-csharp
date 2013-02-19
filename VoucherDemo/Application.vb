@@ -1,9 +1,7 @@
 Imports Knopso
 
 Public Class Application
-	Private Const KnopsoBackend As String = "https://broker.sandbox.knopso.com:8004"
-	Private Const KnopsoFrontend As String = "http://www.sandbox.vingd.com"
-	Private Const KnopsoUsername As String = "test@knopso.com"
+	Private Const KnopsoUsername As String = "test@vingd.com"
 	Private Const KnopsoPassword As String = "123"
 	
 	Public Shared Function CreateVoucher(amount as double, msg as string) as KnopsoVoucher
@@ -11,7 +9,7 @@ Public Class Application
 		
 		Dim knopso as KnopsoBroker
 		' sandbox:
-		knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash, KnopsoBackend, KnopsoFrontend)
+		knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash, KnopsoBroker.sandboxEndpointURL, KnopsoBroker.sandboxFrontendURL)
 		' production:
 		'knopso = new KnopsoBroker(KnopsoUsername, KnopsoPasswordHash)
 		
@@ -31,7 +29,7 @@ Public Class Application
 	
 	Public Shared Sub Main()
 		Dim voucher as KnopsoVoucher
-		voucher = CreateVoucher(1.99, "Hvala")
+		voucher = CreateVoucher(1.99, "Thank you!")
 		System.Console.WriteLine("Voucher created!")
 		System.Console.WriteLine("  Voucher code: " + voucher.code)
 		System.Console.WriteLine("  Redirect URL: " + voucher.GetRedirectURL())
