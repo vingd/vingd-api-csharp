@@ -8,8 +8,8 @@
     <ProjectGuid>{5982292B-B760-4A61-8B49-D95550214B15}</ProjectGuid>
     <ProjectTypeGuids>{349C5851-65DF-11DA-9384-00065B846F21};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>KnopsoAPIExample</RootNamespace>
-    <AssemblyName>KnopsoAPIExample</AssemblyName>
+    <RootNamespace>VingdWebExample</RootNamespace>
+    <AssemblyName>VingdWebExample</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -62,9 +62,9 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <ProjectReference Include="..\KnopsoAPI\KnopsoAPI.csproj">
+    <ProjectReference Include="..\..\Vingd\Vingd.csproj">
       <Project>{7E693AA5-87EC-49F6-BC6B-B9AF541C89F4}</Project>
-      <Name>KnopsoAPI</Name>
+      <Name>Vingd</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

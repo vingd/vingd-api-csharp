@@ -1,8 +1,8 @@
-<%@ Page Language="C#" Inherits="KnopsoAPIExample.Default" %>
+<%@ Page Language="C#" Inherits="VingdWebExample.Default" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head runat="server">
-	<title>KnopsoAPIExample</title>
+	<title>VingdWebExample</title>
 	
     <script type="text/javascript" src="http://apps.vingd.com/cdn/vingd-popup/v0.8/build/main.min.js"></script>
     <script type="text/javascript">

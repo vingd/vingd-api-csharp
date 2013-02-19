@@ -1,1 +1,0 @@
-<%@ Application Inherits="KnopsoAPIExample.Global" %>

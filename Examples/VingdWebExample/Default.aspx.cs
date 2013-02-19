@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace KnopsoAPIExample {
+namespace VingdWebExample {
 	
 	public partial class Default : System.Web.UI.Page {
 		public const string baseURL = "http://127.0.0.1:8080";

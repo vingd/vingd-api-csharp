@@ -2,7 +2,7 @@ using System;
 using System.Web;
 using System.Text;
 
-namespace KnopsoAPIExample
+namespace VingdWebExample
 {
 
 	public class StringWalker
