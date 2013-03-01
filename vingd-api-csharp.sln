@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VingdWebExample", "Examples
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VoucherConsoleExample", "Examples\VoucherConsoleExample\VoucherConsoleExample.vbproj", "{80F341DC-1675-4134-B809-BE275D963226}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoMonetizationWebExample", "Examples\VideoMonetizationWebExample\VideoMonetizationWebExample.csproj", "{883D0760-BCEF-4B44-BBAF-CC7B8D859156}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,8 +27,12 @@ Global
 		{80F341DC-1675-4134-B809-BE275D963226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80F341DC-1675-4134-B809-BE275D963226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80F341DC-1675-4134-B809-BE275D963226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{883D0760-BCEF-4B44-BBAF-CC7B8D859156}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{883D0760-BCEF-4B44-BBAF-CC7B8D859156}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{883D0760-BCEF-4B44-BBAF-CC7B8D859156}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{883D0760-BCEF-4B44-BBAF-CC7B8D859156}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Examples\VingdWebExample\VingdWebExample.csproj
+		StartupItem = Examples\VideoMonetizationWebExample\VideoMonetizationWebExample.csproj
 	EndGlobalSection
 EndGlobal
