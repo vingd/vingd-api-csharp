@@ -63,16 +63,15 @@ Wrap up Vingd order and redirect user to confirm his purchase at Vingd frontend:
     string objectName = "My test object";
     string objectURL = "http://localhost:666/";
     double orderPrice = 2.00;
-    TimeSpan orderExpiry = new TimeSpan(0, 15, 0);  // 15 minutes
     
     // Register Vingd object (once per selling item).
     long oid = v.CreateObject(objectName, objectURL);
     
     // Prepare Vingd order.
-    VingdOrder order = v.CreateOrder(oid, orderPrice, orderExpiry);
+    VingdOrder order = v.CreateOrder(oid, orderPrice);
     
     // Order ready, redirect user to confirm his purchase at Vingd frontend.
-    string redirectURL = order.GetRedirectURL();
+    string orderURL = order.GetRedirectURL();
 
 As user confirms his purchase on Vingd frontend he is redirected back to object
 URL expanded with purchase verification parameters.
@@ -94,7 +93,7 @@ URL expanded with purchase verification parameters.
 Reward user
 ~~~~~~~~~~~
 
-Reward user with vingd:
+Reward user with vingd, directly:
 
 .. code-block:: csharp
 
@@ -105,7 +104,17 @@ Reward user with vingd:
     
     // Reward user.
     v.RewardUser(rewardHUID, rewardAmount, rewardDescription);
-    
+
+Reward user with vingd via voucher:
+
+.. code-block:: csharp
+
+   // Create 1.25 VINGD voucher that expires in a month (by default).
+   VingdVoucher voucher = v.CreateVoucher(1.25, "Thank you!");
+   
+   // Redirect user to Vingd frontent to confirm his reward.
+   string voucherURL = voucher.GetRedirectURL();
+
 For more examples, see ``Examples/`` in source.
 
 
@@ -127,6 +136,6 @@ See the LICENSE file for full details.
 .. _`Vingd`: http://www.vingd.com/
 .. _`PHP docs`: https://vingd-api-for-php.readthedocs.org/en/latest/
 .. _`Python docs`: https://vingd-api-for-python.readthedocs.org/en/latest/
-.. _`demos`: http://docs.vingd.com/
+.. _`demos`: http://developers.vingd.com/
 .. _`GitHub`: https://github.com/vingd/vingd-api-csharp/
 .. _`zip archive`: https://github.com/vingd/vingd-api-csharp/zipball/master
