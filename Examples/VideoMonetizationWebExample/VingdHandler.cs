@@ -48,9 +48,13 @@ namespace VideoMonetizationWebExample {
 		// TEMP: just for a demo, we'll create a new Vingd Order pre video (per request)
 		public VingdOrder GetVideoOrder(int videoID) {
 			if (!videoOrders.ContainsKey(videoID)) {
-				videoOrders.Add(videoID, vingd.CreateOrder(GetVideoObjectID(), orderPrice, orderExpiry));
+				videoOrders.Add(videoID, vingd.CreateOrder(GetVideoObjectID(), orderPrice, Convert.ToString(videoID), orderExpiry));
 			}
 			return videoOrders[videoID];
+		}
+		
+		public string GetVideoOrderURL(int videoID) {
+			return GetVideoOrder(videoID).GetRedirectURL();
 		}
 		
 		public VingdClient GetVingdClient() {

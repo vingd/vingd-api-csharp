@@ -8,13 +8,13 @@
 <body>
     <div class="v-video">
         <div class="v-video-purchase">
-            <a href="<%= v.GetVideoOrder(1).GetRedirectURL("1") %>" class="v-video-purchase-link">Open video 1 (authorize with VINGD <%= String.Format("{0:f2}", vingdVideoPrice) %>)</a>
+            <a href="<%= v.GetVideoOrderURL(1) %>" class="v-video-purchase-link">Open video 1 (authorize with VINGD <%= String.Format("{0:f2}", vingdVideoPrice) %>)</a>
         </div>
     </div>
 
     <div class="v-video">
         <div class="v-video-purchase">
-            <a href="<%= v.GetVideoOrder(2).GetRedirectURL("2") %>" class="v-video-purchase-link">Open video 2 (authorize with VINGD <%= String.Format("{0:f2}", vingdVideoPrice) %>)</a>
+            <a href="<%= v.GetVideoOrderURL(2) %>" class="v-video-purchase-link">Open video 2 (authorize with VINGD <%= String.Format("{0:f2}", vingdVideoPrice) %>)</a>
         </div>
     </div>
 

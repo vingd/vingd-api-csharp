@@ -6,7 +6,7 @@ $(function() {
         siteURL: siteURL,
         lang: 'en',
         onSuccess: function(hwnd, args) {
-            window.location = vingd.buildURL(objectURL, {vid: args.context, token: args.token, context: args.context});
+            window.location = vingd.buildURL(objectURL, {token: args.token});
         }
     });
     

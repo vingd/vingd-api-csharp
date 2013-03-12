@@ -26,7 +26,6 @@ namespace VideoMonetizationWebExample {
 		}
 		
 		public string GetVideo() {
-			int vid = Convert.ToInt32(Request["vid"]);
 			string token = Request["token"];
 			VingdPurchase purchase;
 			try {
@@ -36,10 +35,11 @@ namespace VideoMonetizationWebExample {
 			} catch (Exception e) {
 				return e.Message;
 			}
+			int videoID = Convert.ToInt32(purchase.context);
 			
 			string html;
 			try {
-				html = String.Format("<iframe src=\"{0}\" width=\"500\" height=\"281\" frameborder=\"0\" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>", GetVideoLink(vid));
+				html = String.Format("<iframe src=\"{0}\" width=\"500\" height=\"281\" frameborder=\"0\" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>", GetVideoLink(videoID));
 				vingd.CommitPurchase(purchase);
 			} catch (Exception e) {
 				return e.Message;

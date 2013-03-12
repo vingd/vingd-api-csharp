@@ -60,20 +60,20 @@ namespace VingdWebExample {
 				if (Session["oid"] == null) {
 					SetLink(linkAction, "Register an object first.", "/?state=register");
 				} else {
-					VingdOrder order = vingd.CreateOrder((long)Session["oid"], 1.99);
+					VingdOrder order = vingd.CreateOrder((long)Session["oid"], 1.99, "order-bound-custom-context");
 					Session["orderid"] = order.id;
 					LogAppend("Order created, Order ID = " + order.id);
-					SetLink(linkAction, "Buy it!", order.GetRedirectURL("my-custom-context"));
-					SetLink(linkActionAlt, "Buy it in a popup!", order.GetRedirectURL("my-custom-context"));
+					SetLink(linkAction, "Buy it!", order.GetRedirectURL());
+					SetLink(linkActionAlt, "Buy it in a popup!", order.GetRedirectURL());
 					linkActionAlt.Attributes["onclick"] = "return orderOpener(this);";
 				}
 				break;
 			
 			case "access":
-				string context = Request["context"];
 				string token = Request["token"];
 				VingdPurchase purchase = vingd.VerifyPurchase(token);
-				LogAppend("Context: " + context);
+				LogAppend("Context: " + purchase.context);
+				LogAppend("Hashed User ID: " + purchase.huid);
 				LogAppend("Purchase: " + ObjectDump(purchase));
 				// serve the content, then commit
 				LogAppend("TODO: serve the content.");
