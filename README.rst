@@ -121,9 +121,11 @@ For more examples, see ``Examples/`` in source.
 Documentation
 -------------
 
-Full C# library documentation is not yet available, but you can browse through
-semantically equivalent `PHP docs`_ and `Python docs`_. Also, feel free to
-inspect the ``Vingd`` class code/comments.
+Full C# library documentation is not yet available, however general outline
+(with communication sequence diagrams) of interaction with Vingd is available in
+the `vingd-flow.pdf`_. You can also browse through semantically equivalent `PHP
+docs`_ and `Python docs`_. Feel free to inspect the ``Vingd`` class
+code/comments for details.
 
 
 Copyright and License
@@ -139,3 +141,4 @@ See the LICENSE file for full details.
 .. _`demos`: http://developers.vingd.com/
 .. _`GitHub`: https://github.com/vingd/vingd-api-csharp/
 .. _`zip archive`: https://github.com/vingd/vingd-api-csharp/zipball/master
+.. _`vingd-flow.pdf`: http://docs.vingd.com/manuals/vingd-flow.pdf
