@@ -268,12 +268,14 @@ namespace Vingd {
 		/**
 		 * Contacts Vingd Broker and generates a new order for selling the object (oid)
      	 * under the defined terms (price). Order shall be valid until expiresLocal.
+     	 * Context shall be stored with order and returned upon purchase verification.
      	 * 
 		 */
-		public VingdOrder CreateOrder (long oid, double price, DateTime expiresLocal) {
+		public VingdOrder CreateOrder (long oid, double price, string context, DateTime expiresLocal) {
 			DateTimeOffset expiresWithTimezone = new DateTimeOffset(expiresLocal, TimeZone.CurrentTimeZone.GetUtcOffset(expiresLocal));
 			var parameters = new Dictionary<string, object>();
 			parameters.Add("price", (int)(price * 100));
+			parameters.Add("context", context);
 			parameters.Add("order_expires", expiresWithTimezone.ToString("o"));
 			
 			object responseRaw = Request("POST", "/objects/" + oid + "/orders", parameters);
@@ -290,15 +292,23 @@ namespace Vingd {
 			}
 			long orderid = Convert.ToInt64(id);
 			
-			return new VingdOrder(orderid, oid, price, expiresWithTimezone, frontendURL);
+			return new VingdOrder(orderid, oid, price, context, expiresWithTimezone, frontendURL);
 		}
 
+		public VingdOrder CreateOrder(long oid, double price, string context, TimeSpan expiry) {
+			return CreateOrder(oid, price, context, DateTime.Now.Add(expiry));
+		}
+		
+		public VingdOrder CreateOrder(long oid, double price, string context) {
+			return CreateOrder(oid, price, context, DateTime.Now.Add(defaultOrderExpiry));
+		}
+		
 		public VingdOrder CreateOrder(long oid, double price, TimeSpan expiry) {
-			return CreateOrder(oid, price, DateTime.Now.Add(expiry));
+			return CreateOrder(oid, price, null, DateTime.Now.Add(expiry));
 		}
 
 		public VingdOrder CreateOrder(long oid, double price) {
-			return CreateOrder(oid, price, DateTime.Now.Add(defaultOrderExpiry));
+			return CreateOrder(oid, price, null, DateTime.Now.Add(defaultOrderExpiry));
 		}
 
 		/**
@@ -324,6 +334,7 @@ namespace Vingd {
 				huid = (string)response["huid"],
 				oid = Convert.ToInt64(oid),
 				orderid = Convert.ToInt64(response["orderid"]),
+				context = (string)response["context"],
 				purchaseid = Convert.ToInt64(response["purchaseid"]),
 				transferid = Convert.ToInt64(response["transferid"]),
 				reclaimed = Convert.ToBoolean(response["reclaimed"])
@@ -416,32 +427,26 @@ namespace Vingd {
 		public long id;
 		public long oid;
 		public double price;
+		public string context;
 		public DateTimeOffset expires;
 
 		private string frontendURL;
 
-		public VingdOrder(long id, long oid, double price, DateTimeOffset expires, string frontendURL) {
+		public VingdOrder(long id, long oid, double price, string context, DateTimeOffset expires, string frontendURL) {
 			this.id = id;
 			this.oid = oid;
 			this.price = price;
+			this.context = context;
 			this.expires = expires;
 			this.frontendURL = frontendURL;
 		}
 
 		public string GetRedirectURL() {
-			return GetRedirectURL(null);
+			return frontendURL + "/orders/" + id + "/add/";
 		}
-		public string GetRedirectURL(string context) {
-			if (context != null) context = "?context=" + Uri.EscapeUriString(context);
-			return frontendURL + "/orders/" + id + "/add/" + context;
-		}
-
+		
 		public string GetPopupURL() {
-			return GetPopupURL(null);
-		}
-		public string GetPopupURL(string context) {
-			if (context != null) context = "?context=" + Uri.EscapeUriString(context);
-			return frontendURL + "/popup/orders/" + id + "/add/" + context;
+			return frontendURL + "/popup/orders/" + id + "/add/";
 		}
 	}
 
@@ -452,6 +457,7 @@ namespace Vingd {
 		public long orderid;
 		public long purchaseid;
 		public long transferid;
+		public string context;
 		public bool reclaimed;
 	}
 	
@@ -475,6 +481,7 @@ namespace Vingd {
 		public string GetRedirectURL() {
 			return frontendURL + "/vouchers/" + code;
 		}
+		
 		public string GetPopupURL() {
 			return frontendURL + "/popup/vouchers/" + code;
 		}
