@@ -142,3 +142,7 @@ See the LICENSE file for full details.
 .. _`GitHub`: https://github.com/vingd/vingd-api-csharp/
 .. _`zip archive`: https://github.com/vingd/vingd-api-csharp/zipball/master
 .. _`vingd-flow.pdf`: http://docs.vingd.com/manuals/vingd-flow.pdf
+
+.. image:: https://cruel-carlota.pagodabox.com/b1f04953de9d7ce8e3370191065285ed
+    :alt: githalytics.com
+    :target: http://githalytics.com/vingd/vingd-api-csharp
