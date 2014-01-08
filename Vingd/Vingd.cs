@@ -326,7 +326,11 @@ namespace Vingd {
 			} catch {
 				throw new VingdTransportException("Invalid token.", "TokenVerification");
 			}
-			
+
+			if (!IsTokenFormatValid(tid)) {
+				throw new VingdTransportException("Invalid token format.", "TokenVerification");
+			}
+
 			object responseRaw = Request("GET", "/objects/" + oid + "/tokens/" + tid, null);
 			var response = ConvertToDict(responseRaw);
 			
@@ -339,6 +343,10 @@ namespace Vingd {
 				transferid = Convert.ToInt64(response["transferid"]),
 				reclaimed = Convert.ToBoolean(response["reclaimed"])
 			};
+		}
+
+		public bool IsTokenFormatValid (string tid) {
+			return Regex.Match(tid, "^[a-fA-F\\d]{1,40}$").Success;
 		}
 
 		/**
