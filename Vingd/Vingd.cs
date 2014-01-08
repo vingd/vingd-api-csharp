@@ -68,7 +68,7 @@ namespace Vingd {
         
         // sandbox/testing Vingd endpoint and Vingd user frontend base
 		public const string sandboxEndpointURL = "https://api.vingd.com/sandbox/broker/v1";
-		public const string sandboxFrontendURL = "http://www.sandbox.vingd.com";
+		public const string sandboxFrontendURL = "https://www.sandbox.vingd.com";
 
 		// default order lifespan: 15min
 		public TimeSpan defaultOrderExpiry = new TimeSpan(0, 15, 0);
