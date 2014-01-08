@@ -10,6 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>VingdWebExample</RootNamespace>
     <AssemblyName>VingdWebExample</AssemblyName>
+    <ReleaseVersion>1.1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

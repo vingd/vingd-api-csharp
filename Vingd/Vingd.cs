@@ -56,7 +56,7 @@ namespace Vingd {
 
 
 	public class VingdClient {
-        public const string userAgent = "vingd-api-csharp/1.1";
+        public const string userAgent = "vingd-api-csharp/1.1.1";
 		
 		// note: mono by default has empty trusted CA store
 		//       Vingd uses DigiCert's certificate, so you should at least add their CA cert

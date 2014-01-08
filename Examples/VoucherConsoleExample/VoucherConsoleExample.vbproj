@@ -9,6 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>VoucherConsoleExample</RootNamespace>
     <AssemblyName>VoucherConsoleExample</AssemblyName>
+    <ReleaseVersion>1.1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Vingd</RootNamespace>
     <AssemblyName>Vingd</AssemblyName>
+    <ReleaseVersion>1.1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
